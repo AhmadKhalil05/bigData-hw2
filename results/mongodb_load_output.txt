@@ -1,0 +1,10 @@
+Parsed students: 100
+Database: university
+Collection: students
+Inserted students: 100
+Students in MongoDB: 100
+Indexes:
+_id_ {"_id": 1}
+courseIds_1 {"courseIds": 1}
+gpa_1 {"gpa": 1}
+Exported students: 100

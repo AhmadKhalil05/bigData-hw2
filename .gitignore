@@ -1,0 +1,18 @@
+# Scala / sbt build outputs
+**/target/
+*.class
+*.log
+
+# IDE and build-server metadata
+.idea/
+.bsp/
+.bloop/
+.metals/
+.scala-build/
+*.iml
+
+# Operating-system metadata
+.DS_Store
+
+# Local Hadoop checksum files
+course_stats.parquet/.*.crc

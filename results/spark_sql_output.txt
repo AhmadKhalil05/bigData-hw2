@@ -1,0 +1,579 @@
+Spark version: 4.1.2
+Scala version: 2.13.17
+
+Setup - Read students.json
+val schema: String =
+"
+  _id INT,
+  firstName STRING,
+  lastName STRING,
+  dateOfBirth TIMESTAMP,
+  courseIds ARRAY<INT>,
+  gpa DOUBLE
+"
+val df: org.apache.spark.sql.DataFrame = [_id: int, firstName: string ... 4 more fields]
+root
+ |-- _id: integer (nullable = true)
+ |-- firstName: string (nullable = true)
+ |-- lastName: string (nullable = true)
+ |-- dateOfBirth: timestamp (nullable = true)
+ |-- courseIds: array (nullable = true)
+ |    |-- element: integer (containsNull = true)
+ |-- gpa: double (nullable = true)
+
+
+
+                                                                                
++---+---------+--------+-------------------+---------------+---+
+|_id|firstName|lastName|dateOfBirth        |courseIds      |gpa|
++---+---------+--------+-------------------+---------------+---+
+|1  |Alice    |Johnson |1998-03-15 00:00:00|[101, 102, 103]|3.8|
+|2  |Bob      |Smith   |1997-06-22 00:00:00|[102, 104, 105]|3.5|
+|3  |Charlie  |Williams|1999-01-10 00:00:00|[101, 103, 105]|3.2|
+|4  |Diana    |Miller  |1997-09-05 00:00:00|[101, 102, 104]|3.9|
+|5  |Eric     |Davis   |1998-12-18 00:00:00|[103, 105]     |3.1|
++---+---------+--------+-------------------+---------------+---+
+only showing top 5 rows
+Students: 100
+
+4.1.1 - Students registered in course 103
+val course103Sql: String =
+"
+  SELECT _id, CONCAT(firstName, ' ', lastName) AS fullName, gpa
+  FROM students
+  WHERE array_contains(courseIds, 103)
+  ORDER BY lastName, _id
+"
+SELECT _id, CONCAT(firstName, ' ', lastName) AS fullName, gpa
+  FROM students
+  WHERE array_contains(courseIds, 103)
+  ORDER BY lastName, _id
+val course103: org.apache.spark.sql.DataFrame = [_id: int, fullName: string ... 1 more field]
++---+-----------------+---+
+|_id|fullName         |gpa|
++---+-----------------+---+
+|22 |Victoria Anderson|3.1|
+|51 |Yasmine Baker    |3.1|
+|41 |Olivia Bell      |3.4|
+|87 |Isabella Bell    |3.1|
+|36 |James Brooks     |3.5|
+|96 |Rachel Brooks    |3.5|
+|17 |Quinn Brown      |3.6|
+|48 |Victoria Butler  |3.5|
+|81 |Chloe Butler     |3.9|
+|58 |Felix Cook       |3.1|
+|99 |Uriel Cook       |3.1|
+|25 |Yasmine Cooper   |3.2|
+|5  |Eric Davis       |3.1|
+|19 |Samuel Evans     |3.8|
+|39 |Mia Fisher       |3.1|
+|49 |William Fisher   |3.2|
+|72 |Taylor Fisher    |3.5|
+|45 |Samuel Foster    |3.9|
+|53 |Ava Gonzalez     |3.4|
+|74 |Victoria Gonzalez|3.9|
+|12 |Liam Hall        |3.2|
+|34 |Henry Hall       |3.1|
+|60 |Henry Howard     |3.5|
+|1  |Alice Johnson    |3.8|
+|14 |Noah Johnson     |3.1|
+|8  |Hannah Lee       |3.6|
+|65 |Mia Lopez        |3.4|
+|27 |Ava Parker       |3.1|
+|84 |Felix Parker     |3.5|
+|29 |Chloe Reed       |3.4|
+|69 |Quinn Reed       |3.9|
+|63 |Katherine Stewart|3.1|
+|91 |Mia Ward         |3.8|
+|3  |Charlie Williams |3.2|
+|77 |Yasmine Young    |3.4|
+|94 |Peter Young      |3.1|
++---+-----------------+---+
+
+Course matches: 36
+
+4.1.2 - Students with GPA strictly greater than 3.5
+val highGpaSql: String =
+"
+  SELECT _id, CONCAT(firstName, ' ', lastName) AS fullName, gpa
+  FROM students
+  WHERE gpa > 3.5
+  ORDER BY gpa DESC, _id
+"
+SELECT _id, CONCAT(firstName, ' ', lastName) AS fullName, gpa
+  FROM students
+  WHERE gpa > 3.5
+  ORDER BY gpa DESC, _id
+val highGpa: org.apache.spark.sql.DataFrame = [_id: int, fullName: string ... 1 more field]
++---+-----------------+---+
+|_id|fullName         |gpa|
++---+-----------------+---+
+|4  |Diana Miller     |3.9|
+|13 |Mia Evans        |3.9|
+|21 |Uriel Moore      |3.9|
+|26 |Zachary Lewis    |3.9|
+|33 |Grace Russell    |3.9|
+|38 |Liam Roberts     |3.9|
+|45 |Samuel Foster    |3.9|
+|50 |Xavier Perez     |3.9|
+|57 |Emma Hall        |3.9|
+|62 |James Hill       |3.9|
+|69 |Quinn Reed       |3.9|
+|74 |Victoria Gonzalez|3.9|
+|81 |Chloe Butler     |3.9|
+|86 |Henry Gonzalez   |3.9|
+|93 |Olivia Baker     |3.9|
+|98 |Taylor Perez     |3.9|
+|1  |Alice Johnson    |3.8|
+|10 |Jack Clark       |3.8|
+|19 |Samuel Evans     |3.8|
+|31 |Emma Turner      |3.8|
+|43 |Quinn Cooper     |3.8|
+|55 |Chloe Adams      |3.8|
+|67 |Olivia Young     |3.8|
+|79 |Ava Gonzalez     |3.8|
+|91 |Mia Ward         |3.8|
+|6  |Fiona Moore      |3.7|
+|15 |Olivia Smith     |3.7|
+|23 |William Thomas   |3.7|
+|28 |Benjamin Ward    |3.7|
+|35 |Isabella Perez   |3.7|
+|40 |Nathan Young     |3.7|
+|47 |Uriel Martin     |3.7|
+|52 |Zachary Murphy   |3.7|
+|59 |Grace Fisher     |3.7|
+|64 |Liam Fisher      |3.7|
+|71 |Samuel Moore     |3.7|
+|76 |Xavier Reed      |3.7|
+|83 |Emma Adams       |3.7|
+|88 |James Stewart    |3.7|
+|95 |Quinn Ward       |3.7|
+|100|Victoria Fisher  |3.7|
+|8  |Hannah Lee       |3.6|
+|17 |Quinn Brown      |3.6|
+|30 |Daniel Murphy    |3.6|
+|42 |Peter Williams   |3.6|
+|54 |Benjamin Evans   |3.6|
+|66 |Nathan Reed      |3.6|
+|78 |Zachary Howard   |3.6|
+|90 |Liam Hall        |3.6|
++---+-----------------+---+
+
+GPA matches: 49
+
+4.2.1 - One row per student and course
+val enrollmentsSql: String =
+"
+  SELECT _id, firstName, lastName, gpa, explode(courseIds) AS course
+  FROM students
+"
+SELECT _id, firstName, lastName, gpa, explode(courseIds) AS course
+  FROM students
+val enrollments: org.apache.spark.sql.DataFrame = [_id: int, firstName: string ... 3 more fields]
++---+---------+--------+---+------+
+|_id|firstName|lastName|gpa|course|
++---+---------+--------+---+------+
+|1  |Alice    |Johnson |3.8|101   |
+|1  |Alice    |Johnson |3.8|102   |
+|1  |Alice    |Johnson |3.8|103   |
+|2  |Bob      |Smith   |3.5|102   |
+|2  |Bob      |Smith   |3.5|104   |
+|2  |Bob      |Smith   |3.5|105   |
+|3  |Charlie  |Williams|3.2|101   |
+|3  |Charlie  |Williams|3.2|103   |
+|3  |Charlie  |Williams|3.2|105   |
+|4  |Diana    |Miller  |3.9|101   |
++---+---------+--------+---+------+
+only showing top 10 rows
+Enrollments: 218
+
+4.2.2 - Per-course summary
+val courseStatsSql: String =
+"
+  SELECT
+    course,
+    COUNT(*) AS studentCount,
+    ROUND(AVG(gpa), 2) AS avgGpa,
+    MIN(gpa) AS minGpa,
+    MAX(gpa) AS maxGpa
+  FROM enrollments
+  GROUP BY course
+  ORDER BY studentCount DESC, course
+"
+SELECT
+    course,
+    COUNT(*) AS studentCount,
+    ROUND(AVG(gpa), 2) AS avgGpa,
+    MIN(gpa) AS minGpa,
+    MAX(gpa) AS maxGpa
+  FROM enrollments
+  GROUP BY course
+  ORDER BY studentCount DESC, course
+val courseStats: org.apache.spark.sql.DataFrame = [course: int, studentCount: bigint ... 3 more fields]
++------+------------+------+------+------+
+|course|studentCount|avgGpa|minGpa|maxGpa|
++------+------------+------+------+------+
+|101   |48          |3.56  |3.1   |3.9   |
+|105   |47          |3.5   |3.1   |3.9   |
+|104   |44          |3.59  |3.1   |3.9   |
+|102   |43          |3.5   |3.1   |3.9   |
+|103   |36          |3.39  |3.1   |3.9   |
++------+------------+------+------+------+
+
+
+4.2.3 - Students grouped by number of courses
+val courseCountsSql: String =
+"
+  SELECT
+    size(courseIds) AS courseCount,
+    COUNT(*) AS studentCount
+  FROM students
+  GROUP BY size(courseIds)
+  ORDER BY courseCount
+"
+SELECT
+    size(courseIds) AS courseCount,
+    COUNT(*) AS studentCount
+  FROM students
+  GROUP BY size(courseIds)
+  ORDER BY courseCount
+val courseCounts: org.apache.spark.sql.DataFrame = [courseCount: int, studentCount: bigint]
++-----------+------------+
+|courseCount|studentCount|
++-----------+------------+
+|1          |8           |
+|2          |66          |
+|3          |26          |
++-----------+------------+
+
+
+4.3.1 - Student count and average GPA by birth year
+val birthYearStatsSql: String =
+"
+  SELECT
+    year(dateOfBirth) AS birthYear,
+    COUNT(*) AS studentCount,
+    ROUND(AVG(gpa), 2) AS avgGpa
+  FROM students
+  GROUP BY year(dateOfBirth)
+  ORDER BY birthYear
+"
+SELECT
+    year(dateOfBirth) AS birthYear,
+    COUNT(*) AS studentCount,
+    ROUND(AVG(gpa), 2) AS avgGpa
+  FROM students
+  GROUP BY year(dateOfBirth)
+  ORDER BY birthYear
+val birthYearStats: org.apache.spark.sql.DataFrame = [birthYear: int, studentCount: bigint ... 1 more field]
++---------+------------+------+
+|birthYear|studentCount|avgGpa|
++---------+------------+------+
+|1997     |47          |3.54  |
+|1998     |29          |3.5   |
+|1999     |24          |3.45  |
++---------+------------+------+
+
+
+4.3.2 - Top three GPA ranks per course, including ties
+val topStudentsSql: String =
+"
+  WITH ranked AS (
+    SELECT
+      course,
+      _id,
+      CONCAT(firstName, ' ', lastName) AS fullName,
+      gpa,
+      DENSE_RANK() OVER (
+        PARTITION BY course
+        ORDER BY gpa DESC
+      ) AS gpaRank
+    FROM enrollments
+  )
+  SELECT course, _id, fullName, gpa, gpaRank
+  FROM ranked
+  WHERE gpaRank <= 3
+  ORDER BY course, gpaRank, _id
+"
+WITH ranked AS (
+    SELECT
+      course,
+      _id,
+      CONCAT(firstName, ' ', lastName) AS fullName,
+      gpa,
+      DENSE_RANK() OVER (
+        PARTITION BY course
+        ORDER BY gpa DESC
+      ) AS gpaRank
+    FROM enrollments
+  )
+  SELECT course, _id, fullName, gpa, gpaRank
+  FROM ranked
+  WHERE gpaRank <= 3
+  ORDER BY course, gpaRank, _id
+Ties share a rank. All students in the first three GPA ranks are included.
+val topStudents: org.apache.spark.sql.DataFrame = [course: int, _id: int ... 3 more fields]
++------+---+-----------------+---+-------+
+|course|_id|fullName         |gpa|gpaRank|
++------+---+-----------------+---+-------+
+|101   |4  |Diana Miller     |3.9|1      |
+|101   |21 |Uriel Moore      |3.9|1      |
+|101   |33 |Grace Russell    |3.9|1      |
+|101   |38 |Liam Roberts     |3.9|1      |
+|101   |45 |Samuel Foster    |3.9|1      |
+|101   |57 |Emma Hall        |3.9|1      |
+|101   |62 |James Hill       |3.9|1      |
+|101   |74 |Victoria Gonzalez|3.9|1      |
+|101   |81 |Chloe Butler     |3.9|1      |
+|101   |93 |Olivia Baker     |3.9|1      |
+|101   |1  |Alice Johnson    |3.8|2      |
+|101   |10 |Jack Clark       |3.8|2      |
+|101   |19 |Samuel Evans     |3.8|2      |
+|101   |31 |Emma Turner      |3.8|2      |
+|101   |43 |Quinn Cooper     |3.8|2      |
+|101   |55 |Chloe Adams      |3.8|2      |
+|101   |91 |Mia Ward         |3.8|2      |
+|101   |23 |William Thomas   |3.7|3      |
+|101   |40 |Nathan Young     |3.7|3      |
+|101   |47 |Uriel Martin     |3.7|3      |
+|101   |64 |Liam Fisher      |3.7|3      |
+|101   |76 |Xavier Reed      |3.7|3      |
+|101   |83 |Emma Adams       |3.7|3      |
+|101   |95 |Quinn Ward       |3.7|3      |
+|102   |4  |Diana Miller     |3.9|1      |
+|102   |13 |Mia Evans        |3.9|1      |
+|102   |21 |Uriel Moore      |3.9|1      |
+|102   |26 |Zachary Lewis    |3.9|1      |
+|102   |69 |Quinn Reed       |3.9|1      |
+|102   |74 |Victoria Gonzalez|3.9|1      |
+|102   |86 |Henry Gonzalez   |3.9|1      |
+|102   |1  |Alice Johnson    |3.8|2      |
+|102   |10 |Jack Clark       |3.8|2      |
+|102   |31 |Emma Turner      |3.8|2      |
+|102   |43 |Quinn Cooper     |3.8|2      |
+|102   |55 |Chloe Adams      |3.8|2      |
+|102   |79 |Ava Gonzalez     |3.8|2      |
+|102   |6  |Fiona Moore      |3.7|3      |
+|102   |23 |William Thomas   |3.7|3      |
+|102   |52 |Zachary Murphy   |3.7|3      |
+|102   |71 |Samuel Moore     |3.7|3      |
+|102   |100|Victoria Fisher  |3.7|3      |
+|103   |45 |Samuel Foster    |3.9|1      |
+|103   |69 |Quinn Reed       |3.9|1      |
+|103   |74 |Victoria Gonzalez|3.9|1      |
+|103   |81 |Chloe Butler     |3.9|1      |
+|103   |1  |Alice Johnson    |3.8|2      |
+|103   |19 |Samuel Evans     |3.8|2      |
+|103   |91 |Mia Ward         |3.8|2      |
+|103   |8  |Hannah Lee       |3.6|3      |
+|103   |17 |Quinn Brown      |3.6|3      |
+|104   |4  |Diana Miller     |3.9|1      |
+|104   |13 |Mia Evans        |3.9|1      |
+|104   |21 |Uriel Moore      |3.9|1      |
+|104   |26 |Zachary Lewis    |3.9|1      |
+|104   |33 |Grace Russell    |3.9|1      |
+|104   |45 |Samuel Foster    |3.9|1      |
+|104   |50 |Xavier Perez     |3.9|1      |
+|104   |57 |Emma Hall        |3.9|1      |
+|104   |86 |Henry Gonzalez   |3.9|1      |
+|104   |19 |Samuel Evans     |3.8|2      |
+|104   |79 |Ava Gonzalez     |3.8|2      |
+|104   |6  |Fiona Moore      |3.7|3      |
+|104   |28 |Benjamin Ward    |3.7|3      |
+|104   |35 |Isabella Perez   |3.7|3      |
+|104   |40 |Nathan Young     |3.7|3      |
+|104   |47 |Uriel Martin     |3.7|3      |
+|104   |52 |Zachary Murphy   |3.7|3      |
+|104   |59 |Grace Fisher     |3.7|3      |
+|104   |64 |Liam Fisher      |3.7|3      |
+|104   |71 |Samuel Moore     |3.7|3      |
+|104   |76 |Xavier Reed      |3.7|3      |
+|104   |83 |Emma Adams       |3.7|3      |
+|104   |88 |James Stewart    |3.7|3      |
+|104   |95 |Quinn Ward       |3.7|3      |
+|105   |33 |Grace Russell    |3.9|1      |
+|105   |38 |Liam Roberts     |3.9|1      |
+|105   |50 |Xavier Perez     |3.9|1      |
+|105   |57 |Emma Hall        |3.9|1      |
+|105   |62 |James Hill       |3.9|1      |
+|105   |93 |Olivia Baker     |3.9|1      |
+|105   |98 |Taylor Perez     |3.9|1      |
+|105   |67 |Olivia Young     |3.8|2      |
+|105   |15 |Olivia Smith     |3.7|3      |
+|105   |28 |Benjamin Ward    |3.7|3      |
+|105   |35 |Isabella Perez   |3.7|3      |
+|105   |40 |Nathan Young     |3.7|3      |
+|105   |59 |Grace Fisher     |3.7|3      |
+|105   |64 |Liam Fisher      |3.7|3      |
+|105   |71 |Samuel Moore     |3.7|3      |
+|105   |76 |Xavier Reed      |3.7|3      |
+|105   |88 |James Stewart    |3.7|3      |
+|105   |95 |Quinn Ward       |3.7|3      |
+|105   |100|Victoria Fisher  |3.7|3      |
++------+---+-----------------+---+-------+
+
+Top-ranked rows: 94
+
+4.3.3 - Pairs of students with matching first and last names
+val sameNamesSql: String =
+"
+  SELECT
+    a._id AS id1,
+    b._id AS id2,
+    CONCAT(a.firstName, ' ', a.lastName) AS fullName,
+    a.dateOfBirth AS dateOfBirth1,
+    b.dateOfBirth AS dateOfBirth2
+  FROM students a
+  JOIN students b
+    ON a.firstName = b.firstName
+    AND a.lastName = b.lastName
+    AND a._id < b._id
+  ORDER BY a._id, b._id
+"
+SELECT
+    a._id AS id1,
+    b._id AS id2,
+    CONCAT(a.firstName, ' ', a.lastName) AS fullName,
+    a.dateOfBirth AS dateOfBirth1,
+    b.dateOfBirth AS dateOfBirth2
+  FROM students a
+  JOIN students b
+    ON a.firstName = b.firstName
+    AND a.lastName = b.lastName
+    AND a._id < b._id
+  ORDER BY a._id, b._id
+val sameNames: org.apache.spark.sql.DataFrame = [id1: int, id2: int ... 3 more fields]
++---+---+--------------+-------------------+-------------------+
+|id1|id2|fullName      |dateOfBirth1       |dateOfBirth2       |
++---+---+--------------+-------------------+-------------------+
+|12 |90 |Liam Hall     |1997-12-27 00:00:00|1998-08-22 00:00:00|
+|16 |42 |Peter Williams|1998-01-14 00:00:00|1998-11-30 00:00:00|
+|18 |70 |Rachel Young  |1998-09-19 00:00:00|1999-09-20 00:00:00|
+|28 |80 |Benjamin Ward |1999-07-01 00:00:00|1999-08-16 00:00:00|
+|53 |79 |Ava Gonzalez  |1997-10-18 00:00:00|1997-03-28 00:00:00|
+|56 |82 |Daniel Martin |1999-05-26 00:00:00|1998-01-22 00:00:00|
+|71 |97 |Samuel Moore  |1997-01-29 00:00:00|1997-04-09 00:00:00|
++---+---+--------------+-------------------+-------------------+
+
+Same-name pairs: 7
+
+4.3.4 - Students above the average GPA of every enrolled course
+val aboveCourseAveragesSql: String =
+"
+  WITH courseAverages AS (
+    SELECT
+      course,
+      AVG(CAST(gpa AS DECIMAL(10, 4))) AS avgGpa
+    FROM enrollments
+    GROUP BY course
+  )
+  SELECT
+    e._id,
+    CONCAT(e.firstName, ' ', e.lastName) AS fullName,
+    e.gpa
+  FROM enrollments e
+  JOIN courseAverages c ON e.course = c.course
+  GROUP BY e._id, e.firstName, e.lastName, e.gpa
+  HAVING e.gpa > MAX(c.avgGpa)
+  ORDER BY e.gpa DESC, e._id
+"
+WITH courseAverages AS (
+    SELECT
+      course,
+      AVG(CAST(gpa AS DECIMAL(10, 4))) AS avgGpa
+    FROM enrollments
+    GROUP BY course
+  )
+  SELECT
+    e._id,
+    CONCAT(e.firstName, ' ', e.lastName) AS fullName,
+    e.gpa
+  FROM enrollments e
+  JOIN courseAverages c ON e.course = c.course
+  GROUP BY e._id, e.firstName, e.lastName, e.gpa
+  HAVING e.gpa > MAX(c.avgGpa)
+  ORDER BY e.gpa DESC, e._id
+val aboveCourseAverages: org.apache.spark.sql.DataFrame = [_id: int, fullName: string ... 1 more field]
++---+-----------------+---+
+|_id|fullName         |gpa|
++---+-----------------+---+
+|4  |Diana Miller     |3.9|
+|13 |Mia Evans        |3.9|
+|21 |Uriel Moore      |3.9|
+|26 |Zachary Lewis    |3.9|
+|33 |Grace Russell    |3.9|
+|38 |Liam Roberts     |3.9|
+|45 |Samuel Foster    |3.9|
+|50 |Xavier Perez     |3.9|
+|57 |Emma Hall        |3.9|
+|62 |James Hill       |3.9|
+|69 |Quinn Reed       |3.9|
+|74 |Victoria Gonzalez|3.9|
+|81 |Chloe Butler     |3.9|
+|86 |Henry Gonzalez   |3.9|
+|93 |Olivia Baker     |3.9|
+|98 |Taylor Perez     |3.9|
+|1  |Alice Johnson    |3.8|
+|10 |Jack Clark       |3.8|
+|19 |Samuel Evans     |3.8|
+|31 |Emma Turner      |3.8|
+|43 |Quinn Cooper     |3.8|
+|55 |Chloe Adams      |3.8|
+|67 |Olivia Young     |3.8|
+|79 |Ava Gonzalez     |3.8|
+|91 |Mia Ward         |3.8|
+|6  |Fiona Moore      |3.7|
+|15 |Olivia Smith     |3.7|
+|23 |William Thomas   |3.7|
+|28 |Benjamin Ward    |3.7|
+|35 |Isabella Perez   |3.7|
+|40 |Nathan Young     |3.7|
+|47 |Uriel Martin     |3.7|
+|52 |Zachary Murphy   |3.7|
+|59 |Grace Fisher     |3.7|
+|64 |Liam Fisher      |3.7|
+|71 |Samuel Moore     |3.7|
+|76 |Xavier Reed      |3.7|
+|83 |Emma Adams       |3.7|
+|88 |James Stewart    |3.7|
+|95 |Quinn Ward       |3.7|
+|100|Victoria Fisher  |3.7|
+|8  |Hannah Lee       |3.6|
+|17 |Quinn Brown      |3.6|
+|30 |Daniel Murphy    |3.6|
+|42 |Peter Williams   |3.6|
+|54 |Benjamin Evans   |3.6|
+|66 |Nathan Reed      |3.6|
+|78 |Zachary Howard   |3.6|
+|90 |Liam Hall        |3.6|
++---+-----------------+---+
+
+Above all course averages: 49
+
+4.4 - Save the per-course summary to Parquet and read it back
+
+
+                                                                                
+val savedCourseStats: org.apache.spark.sql.DataFrame = [course: int, studentCount: bigint ... 3 more fields]
+root
+ |-- course: integer (nullable = true)
+ |-- studentCount: long (nullable = true)
+ |-- avgGpa: double (nullable = true)
+ |-- minGpa: double (nullable = true)
+ |-- maxGpa: double (nullable = true)
+
++------+------------+------+------+------+
+|course|studentCount|avgGpa|minGpa|maxGpa|
++------+------------+------+------+------+
+|101   |48          |3.56  |3.1   |3.9   |
+|102   |43          |3.5   |3.1   |3.9   |
+|103   |36          |3.39  |3.1   |3.9   |
+|104   |44          |3.59  |3.1   |3.9   |
+|105   |47          |3.5   |3.1   |3.9   |
++------+------------+------+------+------+
+
+Saved courses: 5
+val resultsMatch: Boolean = true
+Results match: true
+
+Spark SQL analysis complete.

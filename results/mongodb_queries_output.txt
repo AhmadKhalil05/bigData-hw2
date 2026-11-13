@@ -1,0 +1,148 @@
+Enter course ID: 22 | Victoria Anderson | GPA: 3.10
+51 | Yasmine Baker | GPA: 3.10
+41 | Olivia Bell | GPA: 3.40
+87 | Isabella Bell | GPA: 3.10
+36 | James Brooks | GPA: 3.50
+96 | Rachel Brooks | GPA: 3.50
+17 | Quinn Brown | GPA: 3.60
+48 | Victoria Butler | GPA: 3.50
+81 | Chloe Butler | GPA: 3.90
+58 | Felix Cook | GPA: 3.10
+99 | Uriel Cook | GPA: 3.10
+25 | Yasmine Cooper | GPA: 3.20
+5 | Eric Davis | GPA: 3.10
+19 | Samuel Evans | GPA: 3.80
+39 | Mia Fisher | GPA: 3.10
+49 | William Fisher | GPA: 3.20
+72 | Taylor Fisher | GPA: 3.50
+45 | Samuel Foster | GPA: 3.90
+53 | Ava Gonzalez | GPA: 3.40
+74 | Victoria Gonzalez | GPA: 3.90
+12 | Liam Hall | GPA: 3.20
+34 | Henry Hall | GPA: 3.10
+60 | Henry Howard | GPA: 3.50
+1 | Alice Johnson | GPA: 3.80
+14 | Noah Johnson | GPA: 3.10
+8 | Hannah Lee | GPA: 3.60
+65 | Mia Lopez | GPA: 3.40
+27 | Ava Parker | GPA: 3.10
+84 | Felix Parker | GPA: 3.50
+29 | Chloe Reed | GPA: 3.40
+69 | Quinn Reed | GPA: 3.90
+63 | Katherine Stewart | GPA: 3.10
+91 | Mia Ward | GPA: 3.80
+3 | Charlie Williams | GPA: 3.20
+77 | Yasmine Young | GPA: 3.40
+94 | Peter Young | GPA: 3.10
+Matches: 36
+
+Winning plan:
+{
+  "stage": "SORT",
+  "sortPattern": {
+    "lastName": 1
+  },
+  "memLimit": 104857600,
+  "type": "simple",
+  "inputStage": {
+    "stage": "PROJECTION_SIMPLE",
+    "transformBy": {
+      "_id": 1,
+      "firstName": 1,
+      "lastName": 1,
+      "gpa": 1
+    },
+    "inputStage": {
+      "stage": "FETCH",
+      "inputStage": {
+        "stage": "IXSCAN",
+        "keyPattern": {
+          "courseIds": 1
+        },
+        "indexName": "courseIds_1",
+        "isMultiKey": true,
+        "multiKeyPaths": {
+          "courseIds": [
+            "courseIds"
+          ]
+        },
+        "isUnique": false,
+        "isSparse": false,
+        "isPartial": false,
+        "indexVersion": 2,
+        "direction": "forward",
+        "indexBounds": {
+          "courseIds": [
+            "[103, 103]"
+          ]
+        }
+      }
+    }
+  }
+}
+Course index used: true
+Returned: 36
+Documents examined: 36
+Index keys examined: 36
+
+Enter minimum GPA (0.0-4.0): 98 | Taylor Perez | GPA: 3.90
+93 | Olivia Baker | GPA: 3.90
+86 | Henry Gonzalez | GPA: 3.90
+81 | Chloe Butler | GPA: 3.90
+74 | Victoria Gonzalez | GPA: 3.90
+69 | Quinn Reed | GPA: 3.90
+62 | James Hill | GPA: 3.90
+57 | Emma Hall | GPA: 3.90
+50 | Xavier Perez | GPA: 3.90
+45 | Samuel Foster | GPA: 3.90
+38 | Liam Roberts | GPA: 3.90
+33 | Grace Russell | GPA: 3.90
+26 | Zachary Lewis | GPA: 3.90
+21 | Uriel Moore | GPA: 3.90
+13 | Mia Evans | GPA: 3.90
+4 | Diana Miller | GPA: 3.90
+91 | Mia Ward | GPA: 3.80
+79 | Ava Gonzalez | GPA: 3.80
+67 | Olivia Young | GPA: 3.80
+55 | Chloe Adams | GPA: 3.80
+43 | Quinn Cooper | GPA: 3.80
+31 | Emma Turner | GPA: 3.80
+19 | Samuel Evans | GPA: 3.80
+10 | Jack Clark | GPA: 3.80
+1 | Alice Johnson | GPA: 3.80
+100 | Victoria Fisher | GPA: 3.70
+95 | Quinn Ward | GPA: 3.70
+88 | James Stewart | GPA: 3.70
+83 | Emma Adams | GPA: 3.70
+76 | Xavier Reed | GPA: 3.70
+71 | Samuel Moore | GPA: 3.70
+64 | Liam Fisher | GPA: 3.70
+59 | Grace Fisher | GPA: 3.70
+52 | Zachary Murphy | GPA: 3.70
+47 | Uriel Martin | GPA: 3.70
+40 | Nathan Young | GPA: 3.70
+35 | Isabella Perez | GPA: 3.70
+28 | Benjamin Ward | GPA: 3.70
+23 | William Thomas | GPA: 3.70
+15 | Olivia Smith | GPA: 3.70
+6 | Fiona Moore | GPA: 3.70
+90 | Liam Hall | GPA: 3.60
+78 | Zachary Howard | GPA: 3.60
+66 | Nathan Reed | GPA: 3.60
+54 | Benjamin Evans | GPA: 3.60
+42 | Peter Williams | GPA: 3.60
+30 | Daniel Murphy | GPA: 3.60
+17 | Quinn Brown | GPA: 3.60
+8 | Hannah Lee | GPA: 3.60
+GPA matches: 49
+
+Optional course ID (Enter to skip): 45 | Samuel Foster | GPA: 3.90
+69 | Quinn Reed | GPA: 3.90
+74 | Victoria Gonzalez | GPA: 3.90
+81 | Chloe Butler | GPA: 3.90
+1 | Alice Johnson | GPA: 3.80
+19 | Samuel Evans | GPA: 3.80
+91 | Mia Ward | GPA: 3.80
+8 | Hannah Lee | GPA: 3.60
+17 | Quinn Brown | GPA: 3.60
+Combined matches: 9
