@@ -1,3 +1,7 @@
+<img width="1594" height="987" alt="image" src="https://github.com/user-attachments/assets/15d9c436-2b1a-4a90-a32c-2949cd289582" />
+
+
+
 # Homework 2 — Student Records with MongoDB and Spark SQL
 
 The Scala loader reads the original 100 student records, stores them in `university.students`, and exports them to `students.json`. Spark SQL reads that export with an explicit schema and writes the per-course results to Parquet. This is Option B from the assignment.
